@@ -2,11 +2,6 @@
     if(isset($_SESSION['A_USERNAME']))
     {
         ?>
-
-<?php
-    require './backend/dbconnection.php';
-    $all_user = getAllUser("SELECT * FROM guest");
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -147,9 +142,11 @@
         <div id="chartContainer" style="height: 370px; width:90%; margin: 0 auto ;">
         
         </div>
+        <!-- <iframe src="dinamics.php" title="graph dinamis" style="width:100%; height:100%;"> -->
 
         
     </main>
+    <a href="dinamics.php"> <button class="custom"> Ke halaman dinamis graph </button> </a>
     <div class="kembali">
         <a href="view.php"> <button class="custom"> Kembali ke halaman sebelumnya </button> </a>
     </div>
