@@ -52,15 +52,7 @@
     var input;
     var value;  
     var data ;
-      
-    $.ajax(settings).done(function (response) {
-        
-        input = response["data"];
-        value = Object.values(input);
-        updateChart(value);
-    });
-
-    console.log(value);
+     
     function updateChart() {
         var performance, deltaY, yVal;
         var dps = options.data[0].dataPoints;
@@ -72,7 +64,13 @@
         options.data[0].dataPoints = dps;
         $("#chartContainer").CanvasJSChart().render();
     };
-    updateChart();
+
+    $.ajax(settings).done(function (response) {
+        
+        input = response["data"];
+        value = Object.values(input);
+        updateChart(value);
+    });
 
     setInterval(function () { updateChart() }, 1500);
 
