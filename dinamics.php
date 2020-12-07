@@ -2,6 +2,7 @@
     if(isset($_SESSION['A_USERNAME']))
     {
         ?>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,46 +17,64 @@
     window.onload = function() {
 
     var dataPoints = [];
+    const settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": "https://covid-19-coronavirus-statistics.p.rapidapi.com/v1/total?country=Indonesia",
+        "method": "GET",
+        "headers": {
+            "x-rapidapi-key": "c20948eb7fmsh8a47a46937f7666p1f6903jsn000afa85e8e5",
+            "x-rapidapi-host": "covid-19-coronavirus-statistics.p.rapidapi.com"
+        }
+    };
 
-    var chart = new CanvasJS.Chart("chartContainer", {
-        theme: "light2",
+    var options = {
         title: {
-            text: "Live Data"
+            text: "Data Covid Di Indonesia"
+        },
+        axisY: {
+            includeZero: true
         },
         data: [{
-            type: "line",
-            dataPoints: dataPoints
+            type: "column",
+            yValueFormatString: "#,###",
+            indexLabel: "{y}",
+            color: "#546BC1",
+            dataPoints: [
+                { label: "Recovered", y: 0 },
+                { label: "Deaths", y: 0 },
+                { label: "Confirmed", y: 0 }
+            ]
         }]
-    });
-    updateData();
+    };
+    $("#chartContainer").CanvasJSChart(options);
 
-    // Initial Values
-    var xValue = 0;
-    var yValue = 10;
-    var newDataCount = 6;
-
-    function addData(data) {
-        if(newDataCount != 1) {
-            $.each(data, function(key, value) {
-                dataPoints.push({x: value[0], y: parseInt(value[1])});
-                xValue++;
-                yValue = parseInt(value[1]);
-            });
-        } else {
-            //dataPoints.shift();
-            dataPoints.push({x: data[0][0], y: parseInt(data[0][1])});
-            xValue++;
-            yValue = parseInt(data[0][1]);
-        }
+    var input;
+    var value;  
+    var data ;
+      
+    $.ajax(settings).done(function (response) {
         
-        newDataCount = 1;
-        chart.render();
-        setTimeout(updateData, 1500);
-    }
+        input = response["data"];
+        value = Object.values(input);
+        updateChart(value);
+    });
 
-    function updateData() {
-        $.getJSON("https://canvasjs.com/services/data/datapoints.php?xstart="+xValue+"&ystart="+yValue+"&length="+newDataCount+"type=json", addData);
-    }
+    console.log(value);
+    function updateChart() {
+        var performance, deltaY, yVal;
+        var dps = options.data[0].dataPoints;
+        for (var i = 0; i < dps.length; i++) {
+            
+            yVal = value[i];
+            dps[i].y = yVal;
+        }
+        options.data[0].dataPoints = dps;
+        $("#chartContainer").CanvasJSChart().render();
+    };
+    updateChart();
+
+    setInterval(function () { updateChart() }, 1500);
 
     }
     </script>
